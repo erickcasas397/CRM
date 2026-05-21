@@ -1,0 +1,31 @@
+{
+	"folders": [
+		{
+			"path": "D:/WORK"
+		}
+	],
+	"settings": {
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true,
+			"**/_gsdata_": true,
+			"_gsdata_": true,
+			"**/desktop.ini": true,
+			"*.ini": true,
+			"desktop.ini": true,
+			"**/*.ini": true,
+			"**/WORK VA": true,
+			"WORK VA": true
+		},
+		"explorerExclude.backup": {},
+		"hide-files.files": [
+			".smart-env",
+			"copilot",
+			"Sin título.base",
+			"Sin título.canvas"
+		]
+	}
+}

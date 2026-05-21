@@ -1,0 +1,879 @@
+---
+import fs from "fs";
+import path from "path";
+import { exec } from "child_process";
+
+const listaSistemasOpciones = [
+  "COMPONENTES", "CONTABILIDAD", "BANCOS", "NOMINAS", "XML EN LINEA",
+  "SERVIDOR DE LICENCIAS COMUN", "RESPALDOS", "COMERCIAL PRO", "COMERCIAL PREMIUM", "FACTURA ELECTRONICA"
+];
+
+const esProduccion = process.env.NODE_ENV === 'production' || !fs.existsSync('./src');
+const folder = esProduccion ? 'data' : 'src/data';
+const rutaDatos = path.join(process.cwd(), folder, 'clientes.json');
+const rutaConfig = path.join(process.cwd(), folder, 'config.json');
+
+let datosIniciales = [];
+try {
+  if (fs.existsSync(rutaDatos)) {
+    const rawData = fs.readFileSync(rutaDatos, "utf-8");
+    datosIniciales = JSON.parse(rawData);
+  }
+} catch (error) {
+  console.error("Error al leer el archivo JSON:", error);
+}
+
+let configInicial = { versionesMercado: {}, cartasTecnicas: {} };
+try {
+  if (fs.existsSync(rutaConfig)) {
+    configInicial = JSON.parse(fs.readFileSync(rutaConfig, "utf-8"));
+  }
+} catch (error) {
+  console.error("Error al leer el archivo config:", error);
+}
+---
+
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Control - Versiones de Sistemas</title>
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 30px; background-color: #d6e7f8 !important; color: #334155; }
+    h1 { color: #0f172a; margin-bottom: 5px; font-size: 1.8rem; }
+    p.sub { color: #64748b; margin-bottom: 25px; font-size: 0.95rem; }
+    .flex-layout { display: grid; grid-template-columns: 310px 1fr; gap: 25px; align-items: start; }
+    .panel { border: none; padding: 20px; border-radius: 12px; background: white; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); margin-bottom: 20px; }
+    .market-title { font-size: 1rem; color: #0f172a; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    .market-grid { display: flex; flex-direction: column; gap: 14px; }
+    .market-row { display: flex; flex-direction: column; gap: 4px; background: #f8fafc; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; }
+    .market-row label { font-size: 0.75rem; font-weight: 700; color: #1e293b; }
+    .market-input-group input { padding: 5px 8px; border: 1px solid #cbd5e1; border-radius: 5px; font-size: 0.8rem; width: 93%; }
+    .main-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 15px; flex-wrap: wrap; }
+    .search-input { padding: 10px 16px; border: 1px solid #cbd5e1; border-radius: 8px; width: 250px; font-size: 0.9rem; }
+    .table-container { overflow-x: auto; overflow-y: auto; max-height: 72vh; background: white; border-radius: 12px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05); border: 1px solid #e2e8f0; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
+    th, td { padding: 12px 14px; border-bottom: 1px solid #f1f5f9; }
+    th { position: sticky; top: 0; background-color: #f8fafc; color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; z-index: 10; box-shadow: inset 0 -1px 0 #e2e8f0; }
+    tr:hover { background-color: #f8fafc; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-size: 0.8rem; font-weight: 600; color: #475569; }
+    input, textarea, select { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.9rem; color: #334155; }
+    button { padding: 8px 16px; cursor: pointer; background: #0284c7; color: white; border: none; border-radius: 6px; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; }
+    button:hover { background: #0369a1; }
+    .btn-sm { padding: 5px 10px; font-size: 0.75rem; border-radius: 6px; }
+    .btn-danger { background: #ef4444; } .btn-danger:hover { background: #dc2626; }
+    .btn-success { background: #22c55e; } .btn-success:hover { background: #16a34a; }
+    .btn-secondary { background: #64748b; } .btn-secondary:hover { background: #475569; }
+    .sys-client-section { border-top: 1px solid #e2e8f0; margin-top: 20px; padding-top: 15px; }
+    .sys-client-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+    .contenedor-campos-extras { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-top: 10px; }
+    .extra-field-row { display: flex; gap: 8px; align-items: center; }
+    .toast-notificacion { position: fixed; bottom: 20px; right: 20px; background-color: #10b981; color: white; padding: 12px 20px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); z-index: 9999; }
+    /* === MODAL DE SELECCIÓN DE CANAL === */
+    .modal-canal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99999; display: flex; align-items: center; justify-content: center; }
+    .modal-canal-card { background: white; border-radius: 14px; padding: 26px; width: 360px; max-width: 92vw; box-shadow: 0 20px 50px rgba(0,0,0,0.25); }
+    .modal-canal-titulo { font-size: 1.05rem; font-weight: 700; color: #0f172a; margin: 0 0 5px; }
+    .modal-canal-sub { font-size: 0.82rem; color: #64748b; margin: 0 0 18px; }
+    .modal-canal-btn { width: 100%; display: flex; align-items: center; gap: 12px; padding: 11px 14px; border: 1px solid #e2e8f0; border-radius: 8px; background: #f8fafc; cursor: pointer; margin-bottom: 9px; font-size: 0.85rem; text-align: left; color: #0f172a; transition: border-color 0.15s, background 0.15s; }
+    .modal-canal-btn:hover { border-color: #94a3b8; background: white; }
+    .modal-canal-btn-icono { font-size: 1.5rem; flex-shrink: 0; }
+    .modal-canal-btn-label { font-weight: 600; color: #0f172a; display: block; }
+    .modal-canal-btn-desc { font-size: 0.75rem; color: #64748b; display: block; }
+    .modal-canal-cancelar { display: block; text-align: center; font-size: 0.8rem; color: #94a3b8; cursor: pointer; margin-top: 6px; padding: 6px; }
+    .modal-canal-cancelar:hover { color: #475569; }
+  </style>
+</head>
+
+<h1>📊 Control de Versiones de Sistemas</h1>
+<p class="sub">Soporte CONTPAQi — CRM Técnico.</p>
+
+<div class="flex-layout">
+  <div class="panel">
+    <h3 class="market-title">🚀 Versiones Oficiales y Cartas</h3>
+    <div class="market-grid">
+      {listaSistemasOpciones.map(sistema => (
+        <div class="market-row">
+          <label>{sistema}</label>
+          <div class="market-input-group">
+            <input type="text" class="input-version-oficial" data-sistema={sistema} placeholder="Versión oficial actual" style="margin-bottom: 2px;" />
+            <input type="text" class="input-carta-tecnica" data-sistema={sistema} placeholder="🔗 Link Carta Técnica" style="font-size: 0.75rem; border-color: #e2e8f0;" />
+          </div>
+        </div>
+      ))}
+    </div>
+    <button id="btnGuardarVersionesOficiales" class="btn-success btn-sm" style="width: 100%; margin-top: 15px; justify-content: center;">💾 Guardar Todo</button>
+    
+    <div style="margin-top: 25px; border-top: 2px solid #e2e8f0; padding-top: 15px;">
+      <h3 class="market-title">📝 Plantilla de Mensaje</h3>
+      <div class="form-group" style="margin-bottom: 10px;">
+        <label style="font-size: 0.75rem;">Cuerpo del mensaje (WhatsApp/Mail)</label>
+        <textarea id="txtPlantillaCuerpo" rows="8" style="font-size: 0.75rem; width: 93%;" placeholder="Usa [contacto], [empresa] y [sistemas_pendientes] como variables."></textarea>
+      </div>
+      <button id="btnGuardarPlantilla" class="btn-secondary btn-sm" style="width: 100%; justify-content: center;">💾 Guardar Plantilla</button>
+    </div>
+  </div>
+
+  <div>
+    <div class="main-controls">
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <input type="text" id="txtBuscar" class="search-input" placeholder="🔍 Buscar empresa o contacto...">
+        <select id="selectFiltroSistema">
+          <option value="">🎯 Todos los Sistemas</option>
+          {listaSistemasOpciones.map(sistema => <option value={sistema}>{sistema}</option>)}
+        </select>
+        <button id="btnFiltroFavoritos" style="background: #f59e0b;"><span id="icono-filtro-fav">☆</span> <span id="texto-filtro-fav">Ver Favoritos</span></button>
+      </div>
+      
+      <div style="display:flex; gap:8px;">
+        <button id="btnWspMasivo" class="btn-success" style="background-color: #059669;">📢 WhatsApp (<span class="lblCountSeleccionados">0</span>)</button>
+        <button id="btnMailMasivo" style="background-color: #0078d4;">✉️ Correo (<span class="lblCountSeleccionados">0</span>)</button>
+        <button id="btnNuevo">➕ Registrar Empresa</button>
+      </div>
+    </div>
+
+    <form id="formulario" class="panel" onsubmit="event.preventDefault();" style="display:none; border: 1px solid #bae6fd; background-color: #f0f9ff;">
+      <h3 id="form-titulo" style="margin-top: 0; color: #0369a1;">Registrar Empresa</h3>
+      <input type="hidden" id="edit-index">
+      
+      <div class="form-grid">
+        <div class="form-group"><label>Empresa / Razón Social *</label><input id="form-empresa" required></div>
+        <div class="form-group"><label>Contacto Principal</label><input id="form-contacto"></div>
+        <div class="form-group"><label>Correo Electrónico</label><input id="form-correo" type="email"></div>
+        <div class="form-group"><label>Teléfono 1</label><input id="form-telefono1"></div>
+        <div class="form-group"><label>Teléfono 2</label><input id="form-telefono2"></div>
+      </div>
+
+      <div style="border-top: 1px dashed #cbd5e1; margin-top:15px; padding-top:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <h4 style="margin:0; font-size:0.85rem; color:#0369a1;">⚙️ Especificaciones Técnicas</h4>
+          <button type="button" id="btnAgregarCampoExtra" class="btn-sm btn-secondary">➕ Añadir campo extra</button>
+        </div>
+        <div id="contenedorCamposExtras" class="contenedor-campos-extras"></div>
+      </div>
+
+      <div class="sys-client-section">
+        <h4 style="margin-top: 0; margin-bottom: 10px; font-size: 0.9rem; color: #0369a1;">Sistemas Instalados:</h4>
+        <div class="sys-client-grid">
+          {listaSistemasOpciones.map(sistema => (
+            <div class="form-group">
+              <label style="color:#0284c7; font-size: 0.75rem;">{sistema}</label>
+              <input id={`sys-${sistema.replace(/\s+/g, '_')}`} class="sistema-version-input" data-sistema={sistema} placeholder="No aplica" style="padding: 5px 8px; font-size: 0.8rem;">
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style="margin-top: 20px; display: flex; gap: 10px;">
+        <button type="button" id="btnGuardar">💾 Guardar Cambios</button>
+        <button type="button" id="btnCancelar" class="btn-secondary">Cancelar</button>
+      </div>
+    </form>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 40px; text-align: center;"><input type="checkbox" id="chkSeleccionarTodo" style="cursor:pointer;"></th>
+            <th>Empresa</th>
+            <th>Contacto</th>
+            {listaSistemasOpciones.map(sistema => (
+              <th style="text-align: center; font-size:0.7rem;">{sistema.replace("COMERCIAL ", "COM. ").replace("SERVIDOR DE LICENCIAS COMUN", "SERV. LIC.")}</th>
+            ))}
+            <th style="text-align: center;">Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-clientes-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="data-bridge" 
+     data-iniciales={JSON.stringify(datosIniciales)} 
+     data-config={JSON.stringify(configInicial)}
+     data-sistemas={JSON.stringify(listaSistemasOpciones)}></div>
+
+<script is:inline id="crm-frontend-logic">
+document.addEventListener("DOMContentLoaded", () => {
+  const bridge = document.getElementById("data-bridge");
+  const datosInicialesCliente = JSON.parse(bridge.dataset.iniciales || "[]");
+  const configInicial = JSON.parse(bridge.dataset.config || '{"versionesMercado":{}, "cartasTecnicas":{}}');
+  const listaSistemas = JSON.parse(bridge.dataset.sistemas || "[]");
+
+  let clientes = [];
+  let versionesMercado = configInicial.versionesMercado || {};
+  let cartasTecnicas = configInicial.cartasTecnicas || {};
+  let plantillaCuerpo = configInicial.plantillaCuerpo || `Hola [contacto] de [empresa].\n\nTe saludamos del equipo de INFOXPERT. Notamos que tienes pendiente actualizar:\n\n[sistemas_pendientes]\n\nMantenerlos al día te garantiza seguridad y cumplimiento fiscal.\n\nSaludos,\nEquipo INFOXPERT`;
+
+  // Sincronizar con localStorage (migración y respaldo)
+  const storageClientes = JSON.parse(localStorage.getItem("matriz_clientes_crm"));
+  const storageVersiones = JSON.parse(localStorage.getItem("versiones_market_crm"));
+  const storageCartas = JSON.parse(localStorage.getItem("cartas_tecnicas_crm"));
+
+  if (storageVersiones && Object.keys(versionesMercado).length === 0) versionesMercado = storageVersiones;
+  if (storageCartas && Object.keys(cartasTecnicas).length === 0) cartasTecnicas = storageCartas;
+
+  let filtrarSoloFavoritos = false; 
+  let seleccionadosIdx = [];
+
+  listaSistemas.forEach(s => {
+    const sysKey = s.toUpperCase().trim();
+    if (versionesMercado[sysKey] === undefined) versionesMercado[sysKey] = "";
+    if (cartasTecnicas[sysKey] === undefined) cartasTecnicas[sysKey] = "";
+  });
+
+  function esVersionMenor(vC, vO) {
+    vC = String(vC).toLowerCase().trim(); vO = String(vO).toLowerCase().trim();
+    if (!vC || vC === "" || vC === "no aplica" || !vO || vO === "") return false;
+    if (vC === vO) return false;
+    const partesC = vC.split("sp")[0].replace(/[^0-9.]/g, '').split('.').map(Number);
+    const partesO = vO.split("sp")[0].replace(/[^0-9.]/g, '').split('.').map(Number);
+    const maxLen = Math.max(partesC.length, partesO.length);
+    while (partesC.length < maxLen) partesC.push(0);
+    while (partesO.length < maxLen) partesO.push(0);
+    for (let i = 0; i < maxLen; i++) {
+      if (partesC[i] < partesO[i]) return true;
+      if (partesC[i] > partesO[i]) return false;
+    }
+    return false;
+  }
+
+  async function persistirServidor(tipo = "clientes") {
+    const content = (tipo === "clientes") ? clientes : { versionesMercado, cartasTecnicas, plantillaCuerpo };
+    try {
+      const resp = await fetch("/api/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ type: (tipo === "clientes" ? "data" : "config"), content })
+      });
+      if (!resp.ok) throw new Error("Servidor no respondió correctamente");
+      console.log(`Datos de ${tipo} guardados en el servidor.`);
+    } catch (e) {
+      console.error("Error persistiendo al servidor:", e);
+      // Opcional: mostrar alerta visual si falla el guardado
+      const errorToast = document.createElement("div");
+      errorToast.className = "toast-notificacion";
+      errorToast.style.backgroundColor = "#ef4444";
+      errorToast.innerText = "⚠️ Error al guardar en disco";
+      document.body.appendChild(errorToast);
+      setTimeout(() => { errorToast.remove(); }, 3000);
+    }
+  }
+
+  function procesarYUnificarDatos() {
+    // PRIORIDAD 1: Si el servidor envió datos (JSON), los usamos y sobrescribimos el localStorage
+    // Esto asegura que si el usuario perdió su historial, recuperemos la base de datos del archivo.
+    if (datosInicialesCliente && datosInicialesCliente.length > 0) {
+      console.log("Cargando datos desde el servidor (JSON)...");
+      const unificado = {};
+      datosInicialesCliente.forEach(item => {
+        if (item.SISTEMAS && !item.SISTEMA) {
+          unificado[item.EMPRESA.trim().toUpperCase()] = item;
+          return;
+        }
+        const empNombre = (item.EMPRESA || "SIN NOMBRE").trim().toUpperCase();
+        if (!unificado[empNombre]) {
+          unificado[empNombre] = {
+            EMPRESA: empNombre, CONTACTO: item.CONTACTO || item["CONTACTO PRINCIPAL"] || "", 
+            CORREO: item.CORREO || "",
+            TELEFONO_1: item.TELEFONO || item.TELEFONO_1 || "", TELEFONO_2: item.TELEFONO_2 || "",
+            FAVORITO: item.FAVORITO || false, CAMPOS_EXTRAS: item.CAMPOS_EXTRAS || {}, SISTEMAS: item.SISTEMAS || {}
+          };
+        }
+        if (item.SISTEMA) {
+          unificado[empNombre].SISTEMAS[item.SISTEMA.toUpperCase().trim()] = String(item.VERSION).trim() || "No aplica";
+        }
+      });
+      const resultado = Object.values(unificado);
+      localStorage.setItem("matriz_clientes_crm", JSON.stringify(resultado));
+      return resultado;
+    }
+
+    // PRIORIDAD 2: Solo si el JSON está vacío, intentamos usar lo que esté en localStorage
+    if (storageClientes && storageClientes.length > 0) {
+      console.log("Cargando datos desde localStorage...");
+      return storageClientes;
+    }
+
+    return [];
+  }
+
+  clientes = procesarYUnificarDatos();
+
+  function inicializarFormulariosMercado() {
+    listaSistemas.forEach(sistema => {
+      const sysKey = sistema.toUpperCase().trim();
+      const inputVersion = document.querySelector(`.input-version-oficial[data-sistema="${sistema}"]`);
+      const inputCarta = document.querySelector(`.input-carta-tecnica[data-sistema="${sistema}"]`);
+      if(inputVersion) inputVersion.value = versionesMercado[sysKey] || "";
+      if(inputCarta) inputCarta.value = cartasTecnicas[sysKey] || "";
+    });
+    document.getElementById("txtPlantillaCuerpo").value = plantillaCuerpo;
+  }
+
+  function mostrarToastExito(mensaje) {
+    const toast = document.createElement("div");
+    toast.className = "toast-notificacion";
+    toast.innerText = mensaje;
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.remove(); }, 2000);
+  }
+
+  // =====================================================
+  // FUNCIÓN AUXILIAR: MODAL DE SELECCIÓN DE CANAL
+  // Reutilizable para WhatsApp y Correo
+  // =====================================================
+  function mostrarModalCanal(titulo, subtitulo, opciones, onElegir) {
+    const overlay = document.createElement("div");
+    overlay.className = "modal-canal-overlay";
+
+    let botonesHTML = opciones.map((op, i) => `
+      <button class="modal-canal-btn" data-idx="${i}">
+        <span class="modal-canal-btn-icono">${op.icono}</span>
+        <span>
+          <span class="modal-canal-btn-label">${op.etiqueta}</span>
+          <span class="modal-canal-btn-desc">${op.descripcion}</span>
+        </span>
+      </button>
+    `).join("");
+
+    overlay.innerHTML = `
+      <div class="modal-canal-card">
+        <p class="modal-canal-titulo">${titulo}</p>
+        <p class="modal-canal-sub">${subtitulo}</p>
+        ${botonesHTML}
+        <span class="modal-canal-cancelar">Cancelar</span>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    overlay.querySelectorAll(".modal-canal-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.body.removeChild(overlay);
+        onElegir(parseInt(btn.getAttribute("data-idx")));
+      });
+    });
+    overlay.querySelector(".modal-canal-cancelar").addEventListener("click", () => {
+      document.body.removeChild(overlay);
+    });
+    // También cerrar si se hace clic fuera del card
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) document.body.removeChild(overlay);
+    });
+  }
+
+  document.getElementById("btnGuardarVersionesOficiales").addEventListener("click", () => {
+    listaSistemas.forEach(sistema => {
+      const sysKey = sistema.toUpperCase().trim();
+      versionesMercado[sysKey] = document.querySelector(`.input-version-oficial[data-sistema="${sistema}"]`).value.trim();
+      cartasTecnicas[sysKey] = document.querySelector(`.input-carta-tecnica[data-sistema="${sistema}"]`).value.trim();
+    });
+    localStorage.setItem("versiones_market_crm", JSON.stringify(versionesMercado));
+    localStorage.setItem("cartas_tecnicas_crm", JSON.stringify(cartasTecnicas));
+    persistirServidor("config");
+    render();
+    mostrarToastExito("💾 Sincronizado");
+  });
+
+  document.getElementById("btnGuardarPlantilla").addEventListener("click", () => {
+    plantillaCuerpo = document.getElementById("txtPlantillaCuerpo").value;
+    persistirServidor("config");
+    mostrarToastExito("💾 Plantilla guardada");
+  });
+
+  document.getElementById("btnAgregarCampoExtra").addEventListener("click", () => {
+    const nombreCampo = prompt("¿Qué campo extra deseas registrar? (Ej: Servidor, Terminales, Contraseña, etc.):");
+    if (!nombreCampo) return;
+    crearInputCampoExtra(nombreCampo.trim(), "");
+  });
+
+  function crearInputCampoExtra(nombre, valor) {
+    const contenedor = document.getElementById("contenedorCamposExtras");
+    const div = document.createElement("div");
+    div.className = "form-group extra-field-row";
+    div.innerHTML = `
+      <div style="flex:1; display:flex; flex-direction:column; gap:2px;">
+        <label style="font-size:0.75rem; font-weight:bold; color:#475569;">${nombre}</label>
+        <input class="input-campo-extra" data-campo="${nombre}" value="${valor}">
+      </div>
+      <button type="button" class="btn-sm btn-danger" style="margin-top:14px;">🗑️</button>
+    `;
+    div.querySelector("button").addEventListener("click", () => div.remove());
+    contenedor.appendChild(div);
+  }
+
+  function actualizarContadores() {
+    document.querySelectorAll(".lblCountSeleccionados").forEach(lbl => lbl.innerText = seleccionadosIdx.length);
+  }
+
+  function obtenerClientesFiltradosYVisibles() {
+    const busqueda = document.getElementById("txtBuscar").value.toLowerCase().trim();
+    const sistemaFiltrado = document.getElementById("selectFiltroSistema").value;
+    return clientes.map((c, i) => ({ ...c, originalIdx: i })).filter(item => {
+      if (filtrarSoloFavoritos && !item.FAVORITO) return false;
+      if (sistemaFiltrado !== "") {
+        const vSys = item.SISTEMAS ? item.SISTEMAS[sistemaFiltrado.toUpperCase().trim()] : "";
+        if (!vSys || vSys === "" || vSys.toUpperCase() === "NO APLICA") return false; 
+      }
+      if (busqueda !== "" && !(item.EMPRESA || "").toLowerCase().includes(busqueda) && !(item.CONTACTO || "").toLowerCase().includes(busqueda)) return false;
+      return true;
+    });
+  }
+
+  function render() {
+    const tbody = document.getElementById("tabla-clientes-body");
+    if (!tbody) return;
+    tbody.innerHTML = "";
+    
+    const visibles = obtenerClientesFiltradosYVisibles();
+
+    visibles.forEach((cliente) => {
+      const indexGlobal = cliente.originalIdx;
+      const tr = document.createElement("tr");
+      const estaCheckeado = seleccionadosIdx.includes(indexGlobal) ? "checked" : "";
+      
+      let htmlCamposExtras = "";
+      if (cliente.CAMPOS_EXTRAS) {
+        Object.entries(cliente.CAMPOS_EXTRAS).forEach(([llave, valor]) => {
+          if(valor) htmlCamposExtras += `<span style="background:#e2e2e0; font-size:0.7rem; padding:2px 6px; border-radius:4px; margin-right:4px;">💻 ${llave}: ${valor}</span>`;
+        });
+      }
+
+      let html = `
+        <td style="text-align: center;"><input type="checkbox" class="chk-cliente" data-idx="${indexGlobal}" ${estaCheckeado}></td>
+        <td>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="btn-toggle-favorito" data-idx="${indexGlobal}" style="cursor:pointer; font-size:1.2rem; ${cliente.FAVORITO ? 'color:#f59e0b;' : 'color:#cbd5e1;'}">${cliente.FAVORITO ? '⭐' : '☆'}</span>
+            <strong style="color: #0f172a;">${cliente.EMPRESA}</strong>
+          </div>
+        </td>
+        <td>
+          <span style="display:block; font-weight: 600;">👤 ${cliente.CONTACTO || 'Sin nombre'}</span>
+          <span style="display:block; font-size: 0.75rem; color:#64748b;">
+            📞 ${cliente.TELEFONO_1 || ''} 
+            ${cliente.TELEFONO_1 ? `<button type="button" class="btn-wsp-individual btn-sm" data-idx="${indexGlobal}" style="background:none; border:none; padding:0; cursor:pointer; font-size:1rem;" title="Enviar WhatsApp">📱</button>` : ''}
+          </span>
+          ${cliente.CORREO ? `
+            <span style="display:block; font-size: 0.75rem; color:#0078d4;">
+              ✉️ ${cliente.CORREO}
+              <button type="button" class="btn-mail-individual btn-sm" data-idx="${indexGlobal}" style="background:none; border:none; padding:0; cursor:pointer; font-size:1rem;" title="Enviar Correo">📧</button>
+            </span>` : ''}
+          <div>${htmlCamposExtras}</div>
+        </td>
+      `;
+
+      listaSistemas.forEach(sistema => {
+        const sysKey = sistema.toUpperCase().trim();
+        let vCliente = String(cliente.SISTEMAS ? cliente.SISTEMAS[sysKey] || "" : "").trim();
+        const vOficial = String(versionesMercado[sysKey] || "").trim();
+        let estiloInline = "background-color: #f1f5f9; color: #94a3b8;";
+        let textoBadge = "-";
+
+        if (vCliente && vCliente !== "" && vCliente.toUpperCase() !== "NO APLICA") {
+          textoBadge = vCliente;
+          if (vCliente.toLowerCase() === vOficial.toLowerCase() && vOficial !== "") {
+            estiloInline = "background-color: #dcfce7; color: #15803d; font-weight: bold;";
+          } else if (esVersionMenor(vCliente, vOficial)) {
+            estiloInline = "background-color: #fee2e2; color: #b91c1c; font-weight: bold;";
+          } else {
+            estiloInline = "background-color: #e0f2fe; color: #0369a1; font-weight: bold;";
+          }
+        }
+        html += `<td style="text-align: center;"><span style="display: inline-block; padding: 5px 10px; border-radius: 6px; font-size: 0.8rem; ${estiloInline}">${textoBadge}</span></td>`;
+      });
+
+      html += `
+        <td style="text-align: center; vertical-align: middle;">
+          <div style="display:inline-flex; gap:4px;">
+            <button type="button" class="btn-sm btn-secondary btn-editar-especifico" data-idx="${indexGlobal}">✏️ Editar</button>
+            <button type="button" class="btn-sm btn-danger btn-eliminar" data-idx="${indexGlobal}">🗑️</button>
+          </div>
+        </td>
+      `;
+      tr.innerHTML = html; tbody.appendChild(tr);
+    });
+
+    document.querySelectorAll(".btn-editar-especifico").forEach(b => b.addEventListener("click", prepararEdicion));
+    document.querySelectorAll(".btn-eliminar").forEach(b => b.addEventListener("click", eliminarCliente));
+    document.querySelectorAll(".btn-toggle-favorito").forEach(b => b.addEventListener("click", alternarFavorito));
+    document.querySelectorAll(".btn-wsp-individual").forEach(b => b.addEventListener("click", dispararWhatsAppIndividual));
+    document.querySelectorAll(".btn-mail-individual").forEach(b => b.addEventListener("click", dispararCorreoIndividual));
+    
+    document.querySelectorAll(".chk-cliente").forEach(b => {
+      b.addEventListener("change", function() {
+        const idx = parseInt(this.getAttribute("data-idx"));
+        if (this.checked) { if (!seleccionadosIdx.includes(idx)) seleccionadosIdx.push(idx); }
+        else { seleccionadosIdx = seleccionadosIdx.filter(i => i !== idx); }
+        actualizarContadores();
+      });
+    });
+    actualizarContadores();
+  }
+
+  // =====================================================
+  // 📱 WHATSAPP MASIVO — CON SELECTOR DE ESCRITORIO/WEB
+  // =====================================================
+  function ejecutarSiguienteWhatsapp(listaIndices, posicion, usarWeb) {
+    if (posicion >= listaIndices.length) {
+      mostrarToastExito("✅ Envío de WhatsApp finalizado");
+      return;
+    }
+
+    const idx = listaIndices[posicion];
+    const cliente = clientes[idx];
+    let tel = cliente.TELEFONO_1 || cliente.TELEFONO_2;
+
+    if (!tel) {
+      ejecutarSiguienteWhatsapp(listaIndices, posicion + 1, usarWeb);
+      return;
+    }
+
+    tel = String(tel).replace(/[^0-9]/g, "");
+    if (tel.length === 10) tel = "52" + tel;
+
+    const sistemasPendientes = [];
+    listaSistemas.forEach(sistema => {
+      const sysKey = sistema.toUpperCase().trim();
+      const vCliente = String(cliente.SISTEMAS ? cliente.SISTEMAS[sysKey] || "" : "").trim();
+      const vOficial = String(versionesMercado[sysKey] || "").trim();
+      if (vCliente && vCliente.toUpperCase() !== "NO APLICA" && vOficial !== "" && esVersionMenor(vCliente, vOficial)) {
+        sistemasPendientes.push(`- ${sistema}`);
+      }
+    });
+
+    const listaPendientesTexto = sistemasPendientes.length > 0
+      ? sistemasPendientes.join("\n")
+      : "- Actualizaciones de estabilidad general";
+
+    let mensajeFinal = plantillaCuerpo
+      .replace(/\[contacto\]/g, cliente.CONTACTO || "Cliente")
+      .replace(/\[empresa\]/g, cliente.EMPRESA)
+      .replace(/\[sistemas_pendientes\]/g, listaPendientesTexto);
+
+    if (usarWeb) {
+      // Abre WhatsApp Web en una nueva pestaña del navegador
+      const urlWeb = `https://web.whatsapp.com/send?phone=${tel}&text=${encodeURIComponent(mensajeFinal)}`;
+      window.open(urlWeb, "_blank");
+    } else {
+      // Abre la aplicación de escritorio instalada en Windows
+      const urlApp = `whatsapp://send?phone=${tel}&text=${encodeURIComponent(mensajeFinal)}`;
+      window.location.href = urlApp;
+    }
+
+    setTimeout(() => {
+      if (posicion < listaIndices.length - 1) {
+        const continuar = confirm(`Se envió la orden a WhatsApp para:\n[${cliente.EMPRESA}]\n\n¿Deseas abrir el chat del SIGUIENTE cliente seleccionado?`);
+        if (continuar) {
+          ejecutarSiguienteWhatsapp(listaIndices, posicion + 1, usarWeb);
+        }
+      } else {
+        mostrarToastExito("✅ Envío de WhatsApp finalizado");
+      }
+    }, 600);
+  }
+
+  function dispararWhatsAppMasivo() {
+    if (seleccionadosIdx.length === 0) {
+      return alert("⚠️ Por favor, selecciona al menos una empresa marcando su casilla.");
+    }
+
+    mostrarModalCanal(
+      "📱 ¿Dónde abrir WhatsApp?",
+      `Se procesarán ${seleccionadosIdx.length} chat(s) uno por uno. El mensaje ya está redactado.`,
+      [
+        {
+          icono: "🖥️",
+          etiqueta: "Aplicación de escritorio",
+          descripcion: "Usa el protocolo whatsapp:// — abre la app instalada en Windows"
+        },
+        {
+          icono: "🌐",
+          etiqueta: "WhatsApp Web",
+          descripcion: "Abre web.whatsapp.com en el navegador"
+        }
+      ],
+      function(eleccion) {
+        const usarWeb = (eleccion === 1);
+        if (!confirm(`Se procesarán ${seleccionadosIdx.length} chat(s) uno por uno. ¿Continuar?`)) return;
+        ejecutarSiguienteWhatsapp([...seleccionadosIdx], 0, usarWeb);
+      }
+    );
+  }
+
+  function dispararWhatsAppIndividual(e) {
+    const btn = e.target.closest(".btn-wsp-individual");
+    if (!btn) return;
+    const idx = parseInt(btn.getAttribute("data-idx"));
+    mostrarModalCanal(
+      "📱 ¿Dónde abrir WhatsApp?",
+      "Elige el canal para enviar el mensaje.",
+      [
+        {
+          icono: "🖥️",
+          etiqueta: "Aplicación de escritorio",
+          descripcion: "Abre la app instalada en Windows"
+        },
+        {
+          icono: "🌐",
+          etiqueta: "WhatsApp Web",
+          descripcion: "Abre en el navegador"
+        }
+      ],
+      function(eleccion) {
+        const usarWeb = (eleccion === 1);
+        ejecutarSiguienteWhatsapp([idx], 0, usarWeb);
+      }
+    );
+  }
+
+  // =====================================================
+  // ✉️ CORREO MASIVO — CON SELECTOR DE CLIENTE/WEB
+  // Primera empresa en "Para", el resto en CCO
+  // =====================================================
+  function dispararOutlookMasivo() {
+    if (seleccionadosIdx.length === 0) {
+      return alert("⚠️ Por favor, selecciona al menos una empresa marcando su casilla en la tabla.");
+    }
+
+    const correosLista = [];
+    seleccionadosIdx.forEach(idx => {
+      const cliente = clientes[idx];
+      if (cliente.CORREO && String(cliente.CORREO).trim() !== "") {
+        correosLista.push(String(cliente.CORREO).trim());
+      }
+    });
+
+    if (correosLista.length === 0) {
+      return alert("⚠️ Ninguna de las empresas seleccionadas tiene un correo válido registrado.");
+    }
+
+    const primerCorreo = correosLista[0];
+    const ccoCorreos = correosLista.slice(1).join(";");
+
+    const asunto = `Actualización Importante de Versiones Oficiales CONTPAQi`;
+    
+    // Para el masivo, no podemos personalizar por cliente individualmente en el cuerpo fácilmente 
+    // si usamos un solo correo para todos (CCO), así que usamos una versión genérica o la primera.
+    const primerCliente = clientes[seleccionadosIdx[0]];
+    const listaGral = "- Actualizaciones pendientes de sistemas CONTPAQi";
+    
+    let cuerpoFinal = plantillaCuerpo
+      .replace(/\[contacto\]/g, "Cliente")
+      .replace(/\[empresa\]/g, "su empresa")
+      .replace(/\[sistemas_pendientes\]/g, listaGral);
+
+    const subtitulo = correosLista.length > 1
+      ? `1 empresa en "Para" + ${correosLista.length - 1} empresa(s) en CCO`
+      : `Se enviará solo a: ${primerCorreo}`;
+
+    mostrarModalCanal(
+      "✉️ ¿Dónde redactar el correo?",
+      subtitulo,
+      [
+        {
+          icono: "📬",
+          etiqueta: "Outlook / cliente de escritorio",
+          descripcion: "Usa mailto: nativo — abre Outlook, Thunderbird u otro cliente instalado"
+        },
+        {
+          icono: "🌐",
+          etiqueta: "Gmail Web",
+          descripcion: "Abre Gmail en el navegador con los campos pre-llenados"
+        },
+        {
+          icono: "📧",
+          etiqueta: "Outlook Web (OWA)",
+          descripcion: "Abre outlook.live.com con los campos pre-llenados"
+        }
+      ],
+      function(eleccion) {
+        abrirCanalCorreo(eleccion, primerCorreo, ccoCorreos, asunto, cuerpoFinal);
+      }
+    );
+  }
+
+  function dispararCorreoIndividual(e) {
+    const btn = e.target.closest(".btn-mail-individual");
+    if (!btn) return;
+    const idx = parseInt(btn.getAttribute("data-idx"));
+    const cliente = clientes[idx];
+
+    const correoStr = String(cliente.CORREO || "").trim();
+    if (!correoStr) return alert("⚠️ Esta empresa no tiene correo registrado.");
+
+    const asunto = `Actualización de Sistemas - ${cliente.EMPRESA}`;
+    
+    const sistemasPendientes = [];
+    listaSistemas.forEach(sistema => {
+      const sysKey = sistema.toUpperCase().trim();
+      const vCliente = String(cliente.SISTEMAS ? cliente.SISTEMAS[sysKey] || "" : "").trim();
+      const vOficial = String(versionesMercado[sysKey] || "").trim();
+      if (vCliente && vCliente.toUpperCase() !== "NO APLICA" && vOficial !== "" && esVersionMenor(vCliente, vOficial)) {
+        sistemasPendientes.push(`- ${sistema}`);
+      }
+    });
+    const listaPendientesTexto = sistemasPendientes.length > 0 ? sistemasPendientes.join("\r\n") : "- Estabilidad general";
+
+    let cuerpoFinal = plantillaCuerpo
+      .replace(/\[contacto\]/g, cliente.CONTACTO || 'Cliente')
+      .replace(/\[empresa\]/g, cliente.EMPRESA)
+      .replace(/\[sistemas_pendientes\]/g, listaPendientesTexto);
+
+    mostrarModalCanal(
+      "✉️ ¿Dónde redactar el correo?",
+      `Enviar a: ${correoStr}`,
+      [
+        {
+          icono: "📬",
+          etiqueta: "Outlook / escritorio",
+          descripcion: "Usa el cliente de correo predeterminado"
+        },
+        {
+          icono: "🌐",
+          etiqueta: "Gmail Web",
+          descripcion: "Abre Gmail en el navegador"
+        },
+        {
+          icono: "📧",
+          etiqueta: "Outlook Web",
+          descripcion: "Abre Outlook Web en el navegador"
+        }
+      ],
+      function(eleccion) {
+        abrirCanalCorreo(eleccion, correoStr, "", asunto, cuerpoFinal);
+      }
+    );
+  }
+
+  function abrirCanalCorreo(eleccion, para, cco, asunto, cuerpo) {
+    if (eleccion === 0) {
+      let mailtoUrl = `mailto:${para}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+      if (cco) mailtoUrl = `mailto:${para}?bcc=${encodeURIComponent(cco)}&subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+      window.location.href = mailtoUrl;
+    } else if (eleccion === 1) {
+      const cuerpoConNota = cco ? `[CCO a: ${cco}]\r\n\r\n${cuerpo}` : cuerpo;
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(para)}&su=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpoConNota)}`;
+      window.open(gmailUrl, "_blank");
+    } else if (eleccion === 2) {
+      const owaUrl = `https://outlook.live.com/mail/0/deeplink/compose?to=${encodeURIComponent(para)}&subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+      window.open(owaUrl, "_blank");
+    }
+  }
+
+  function prepararEdicion(e) {
+    const idx = parseInt(e.target.closest("button").getAttribute("data-idx"));
+    const c = clientes[idx];
+    document.getElementById("form-titulo").innerText = "✏️ Editar Empresa";
+    document.getElementById("edit-index").value = idx;
+    document.getElementById("form-empresa").value = c.EMPRESA;
+    document.getElementById("form-contacto").value = c.CONTACTO || "";
+    document.getElementById("form-correo").value = c.CORREO || "";
+    document.getElementById("form-telefono1").value = c.TELEFONO_1 || "";
+    document.getElementById("form-telefono2").value = c.TELEFONO_2 || "";
+    document.getElementById("contenedorCamposExtras").innerHTML = "";
+    if (c.CAMPOS_EXTRAS) {
+      Object.entries(c.CAMPOS_EXTRAS).forEach(([k, v]) => crearInputCampoExtra(k, v));
+    }
+    listaSistemas.forEach(sistema => {
+      const sysKey = sistema.toUpperCase().trim();
+      let valSistema = c.SISTEMAS ? c.SISTEMAS[sysKey] || "" : "";
+      if (valSistema === "No aplica") valSistema = "";
+      const inputSistema = document.getElementById(`sys-${sistema.replace(/\s+/g, '_')}`);
+      if (inputSistema) inputSistema.value = valSistema; 
+    });
+    document.getElementById("formulario").style.display = "block";
+  }
+
+  function alternarFavorito(e) {
+    const idx = parseInt(e.target.getAttribute("data-idx"));
+    clientes[idx].FAVORITO = !clientes[idx].FAVORITO;
+    localStorage.setItem("matriz_clientes_crm", JSON.stringify(clientes));
+    persistirServidor();
+    render();
+  }
+
+  function eliminarCliente(e) {
+    const idx = parseInt(e.target.closest("button").getAttribute("data-idx"));
+    if (confirm("¿Estás seguro de eliminar esta empresa de forma definitiva de tu base local?")) {
+      clientes.splice(idx, 1);
+      localStorage.setItem("matriz_clientes_crm", JSON.stringify(clientes));
+      persistirServidor();
+      render();
+    }
+  }
+
+  function cerrarFormulario() {
+    document.getElementById("formulario").reset();
+    document.getElementById("formulario").style.display = "none";
+    document.getElementById("edit-index").value = "";
+    document.getElementById("contenedorCamposExtras").innerHTML = "";
+  }
+
+  document.getElementById("btnNuevo").addEventListener("click", () => {
+    cerrarFormulario();
+    document.getElementById("form-titulo").innerText = "➕ Registrar Empresa";
+    document.getElementById("formulario").style.display = "block";
+  });
+
+  document.getElementById("btnGuardar").addEventListener("click", () => {
+    const idx = document.getElementById("edit-index").value;
+    let nombreEmpresa = document.getElementById("form-empresa").value.trim().toUpperCase();
+    if (!nombreEmpresa) return;
+
+    const camposExtras = {};
+    document.querySelectorAll(".input-campo-extra").forEach(inp => {
+      camposExtras[inp.getAttribute("data-campo")] = inp.value.trim();
+    });
+
+    const nuevo = {
+      EMPRESA: nombreEmpresa,
+      CONTACTO: document.getElementById("form-contacto").value.trim(),
+      CORREO: document.getElementById("form-correo").value.trim(),
+      TELEFONO_1: document.getElementById("form-telefono1").value.trim(),
+      TELEFONO_2: document.getElementById("form-telefono2").value.trim(),
+      FAVORITO: idx !== "" ? clientes[parseInt(idx)].FAVORITO : false,
+      CAMPOS_EXTRAS: camposExtras,
+      SISTEMAS: {}
+    };
+
+    listaSistemas.forEach(sistema => {
+      const inputSistema = document.getElementById(`sys-${sistema.replace(/\s+/g, '_')}`);
+      const val = inputSistema ? inputSistema.value.trim() : "";
+      nuevo.SISTEMAS[sistema.toUpperCase().trim()] = val === "" ? "No aplica" : val;
+    });
+
+    if (idx === "") clientes.push(nuevo);
+    else clientes[parseInt(idx)] = nuevo;
+
+    localStorage.setItem("matriz_clientes_crm", JSON.stringify(clientes));
+    persistirServidor();
+    cerrarFormulario(); render();
+  });
+
+  document.getElementById("btnCancelar").addEventListener("click", cerrarFormulario);
+  document.getElementById("txtBuscar").addEventListener("input", render);
+  document.getElementById("selectFiltroSistema").addEventListener("change", render);
+  document.getElementById("btnWspMasivo").addEventListener("click", dispararWhatsAppMasivo);
+  document.getElementById("btnMailMasivo").addEventListener("click", dispararOutlookMasivo);
+
+  document.getElementById("btnFiltroFavoritos").addEventListener("click", () => {
+    filtrarSoloFavoritos = !filtrarSoloFavoritos;
+    document.getElementById("icono-filtro-fav").innerText = filtrarSoloFavoritos ? "⭐" : "☆";
+    render();
+  });
+
+  document.getElementById("chkSeleccionarTodo").addEventListener("change", function() {
+    const visibles = obtenerClientesFiltradosYVisibles();
+    if (this.checked) {
+      visibles.forEach(c => { if (!seleccionadosIdx.includes(c.originalIdx)) seleccionadosIdx.push(c.originalIdx); });
+    } else {
+      visibles.forEach(c => { seleccionadosIdx = seleccionadosIdx.filter(i => i !== c.originalIdx); });
+    }
+    render();
+  });
+
+  inicializarFormulariosMercado();
+  render();
+});
+</script>

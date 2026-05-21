@@ -1,0 +1,636 @@
+[
+  {
+    "EMPRESA": "130 GRADOS - EMPRESA DE AUTOMATIZACION DE RESTAURANTES",
+    "CONTACTO": "Carlos Ruz",
+    "CORREO": "a@a.com",
+    "TELEFONO_1": "9991111111",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {
+      "COMPONENTES": "No aplica",
+      "CONTABILIDAD": "18.0.0",
+      "BANCOS": "18.0.0",
+      "NOMINAS": "17.0.0",
+      "XML EN LINEA": "No aplica",
+      "SERVIDOR DE LICENCIAS COMUN": "No aplica",
+      "RESPALDOS": "No aplica",
+      "COMERCIAL PRO": "No aplica",
+      "COMERCIAL PREMIUM": "No aplica",
+      "FACTURA ELECTRONICA": "No aplica"
+    }
+  },
+  {
+    "EMPRESA": "AEPSA - ASFALTOS EMULSIONES",
+    "CONTACTO": "David Sosa",
+    "CORREO": "e@e.com",
+    "TELEFONO_1": "9995555555",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {
+      "COMPONENTES": "No aplica",
+      "CONTABILIDAD": "18.1.0",
+      "BANCOS": "No aplica",
+      "NOMINAS": "17.0.0",
+      "XML EN LINEA": "No aplica",
+      "SERVIDOR DE LICENCIAS COMUN": "No aplica",
+      "RESPALDOS": "No aplica",
+      "COMERCIAL PRO": "No aplica",
+      "COMERCIAL PREMIUM": "No aplica",
+      "FACTURA ELECTRONICA": "No aplica"
+    }
+  },
+  {
+    "EMPRESA": "ASESORES Y AUDITORES",
+    "CONTACTO": "Erick",
+    "CORREO": "",
+    "TELEFONO_1": 9991693430,
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {
+      "COMERCIAL": "12.0.0"
+    }
+  },
+  {
+    "EMPRESA": "ATHENEA",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "AVASA - GRUPOCER",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "AVASA - HERTZ - ESCRITORIO VIRTUAL",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "ALANDALUS - GABY AQUINO",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "ALFACERO",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "ARQUITECTURA MODERNA",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "ASISTENCIA INTEGRAL PERSONALIZADA - GRUPO NAHO TULUM",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "COMISION EJECUTIVA",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "CULTUR",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "COMERCIALIZADORA Y DISTRIBUIDORA MAYASUR SA DE CV",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "CONTROL TOUR",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "DANIEL INURRETA",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "DIRESSA",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "DANTE EDITORIAL",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "EBT EQUIPOS Y BIENES TERAPEUTICOS",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "EGM MK ESCRITORIO VIRTUAL",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "ENVIOS AMERICA EXPRESS",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "EQP",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "FUNDACION HACIENDAS DEL MUNDO MAYA",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "FISPER",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "GRUPO GROUPER",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "GRUPO GW SA DE CV",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "GASOLINERAS MAXOL - ILCO CONSTRUCTORES",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "HOFFEN - FORTECH",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "IMPULSO REGIONAL DEL SURESTE - LA ANITA",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "INSTITUTO DE ESPECIALIDADES ESTOMATOLOGICAS",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "JULIO ARCEO",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "JOSE CHAN - SERIGIO ESPADAS",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "JULIAN LAVADORES",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "LARY",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "LLANTAMAYA",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "MARY ARCE - CONTADORA",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "MAYALAB - LIMPIEZA CON CIENCIA",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "MONTACARGAS RAYCER",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "MOTOLINIA",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "NIUTEC - SERVI CLIMAS",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "OPERADORA CUMBIA - MARIA ELENA CASTRO",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "OSCAR SILVA - GRECIA",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "PROALMEX",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "PROTECCION JURIDICA EMPRESARIAL SC",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "PEREZ PUERTO",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "PIPAS MAQ - TULUM",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "QUESNEL ARQS PROJECTS",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "REFACCIONARIA PATY",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "SADY SOFTNG",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "SANTIFASHION",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "SECOMSA - EDEN",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "SILPRO",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "SUEMMY - SADY SOFTNG",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "SURESTE CONSTRUCTIVO",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "SERIGIO ESPADAS",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "SIQUEFF MERCANTIL",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "SOLUCIONES INTELIGENTES DEL SURESTE",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "TERE CAZOLA - MID",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "TERE CAZOLA - QROO",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "TRANSPORTADORA OSORIO",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "VIVERO TULIPANES",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  },
+  {
+    "EMPRESA": "YUCAKAY",
+    "CONTACTO": "",
+    "CORREO": "",
+    "TELEFONO_1": "",
+    "TELEFONO_2": "",
+    "FAVORITO": false,
+    "CAMPOS_EXTRAS": {},
+    "SISTEMAS": {}
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "versionesMercado": {
+    "COMPONENTES": "",
+    "CONTABILIDAD": "19.0.0",
+    "BANCOS": "",
+    "NOMINAS": "",
+    "XML EN LINEA": "",
+    "SERVIDOR DE LICENCIAS COMUN": "",
+    "RESPALDOS": "",
+    "COMERCIAL PRO": "",
+    "COMERCIAL PREMIUM": "",
+    "FACTURA ELECTRONICA": ""
+  },
+  "cartasTecnicas": {
+    "COMPONENTES": "",
+    "CONTABILIDAD": "",
+    "BANCOS": "",
+    "NOMINAS": "",
+    "XML EN LINEA": "",
+    "SERVIDOR DE LICENCIAS COMUN": "",
+    "RESPALDOS": "",
+    "COMERCIAL PRO": "",
+    "COMERCIAL PREMIUM": "",
+    "FACTURA ELECTRONICA": ""
+  },
+  "plantillaCuerpo": "Hola [contacto] de [empresa].\n\nTe saludamos del equipo de INFOXPERT. Notamos que tienes pendiente actualizar:\n\n[sistemas_pendientes]\n\nMantenerlos al día te garantiza seguridad y cumplimiento fiscal.\n\nSaludos,\nEquipo INFOXPERT"
+}
