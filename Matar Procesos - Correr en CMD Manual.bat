@@ -1,0 +1,1 @@
+for /f "tokens=5" %a in ('netstat -aon ^| findstr :4321 ^| findstr LISTENING') do taskkill /f /pid %aRNAME%" /im node.exe >nul 2>&1

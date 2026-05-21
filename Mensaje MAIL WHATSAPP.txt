@@ -1,0 +1,12 @@
+Hola [contacto] de [empresa].
+
+Te saludamos de parte del equipo de INFOXPERT. Te escribimos para comentarte que ya se encuentran disponibles las últimas versiones oficiales y estables para tus sistemas CONTPAQi.
+
+Revisando tu perfil, notamos que tienes la oportunidad de actualizar los siguientes módulos:
+
+[sistemas_pendientes]
+
+Mantenerlos al día te garantiza la mayor estabilidad, seguridad y el cumplimiento de los cambios fiscales más recientes. Estamos para atenderles con gusto.
+
+Saludos cordiales,
+Equipo INFOXPERT
